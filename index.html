@@ -535,5 +535,14 @@
 </div>
 
 <script src="script.js"></script>
+<script>
+fetch('https://libraryhub-js6u.onrender.com/api/books')
+.then(r=>r.json()).then(d=>{
+  let div=document.createElement('div');
+  div.style="position:fixed;bottom:10px;right:10px;background:black;color:white;padding:10px;border-radius:10px;z-index:9999";
+  div.innerText="Live Books in DB: "+d.length;
+  document.body.appendChild(div);
+});
+</script>
 </body>
 </html>
