@@ -1,13 +1,17 @@
 const mongoose = require("mongoose");
 
-// Connects to MongoDB using the connection string in .env
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI);
+    const uri = process.env.MONGO_URI;
+    if (!uri) {
+      console.log("MONGO_URI nahi mila, DB ke bina server chal raha hai ⚠️");
+      return;
+    }
+    await mongoose.connect(uri);
     console.log("✅ MongoDB connected");
   } catch (err) {
     console.error("❌ MongoDB connection failed:", err.message);
-    process.exit(1); // stop the app if the database can't connect
+    // Yaha process.exit hata diya, taaki server crash na ho
   }
 };
 
