@@ -2,8 +2,8 @@
    LibraryHub - FINAL FULL CODE (No Error) - ABHAY
 =========================================================== */
 const API_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
-? "http://localhost:5000/api"
-  : "https://YOUR-BACKEND.onrender.com/api";
+ ? "http://localhost:5000/api"
+  : "https://libraryhub-js6u.onrender.com/api";
 
 const state = {
   currentUser: null,
@@ -70,7 +70,6 @@ async function enterApp(){
   document.getElementById("user-avatar").textContent=state.currentUser.name.charAt(0).toUpperCase();
   document.getElementById("settings-name").value=state.currentUser.name;
   document.getElementById("settings-email").value=state.currentUser.email;
-  // Backend se data load karne ki koshish
   try{ const r=await fetch(`${API_URL}/books`); if(r.ok){ const b=await r.json(); if(b.length>0) state.books=b; } }catch{}
   try{ const r=await fetch(`${API_URL}/members`); if(r.ok){ const m=await r.json(); if(m.length>0) state.members=m; } }catch{}
   renderAll();
@@ -114,7 +113,7 @@ function renderBooks(filter=""){
 function openBookModal(){ document.getElementById("book-modal-overlay")?.classList.add("is-open"); }
 function closeBookModal(){ document.getElementById("book-modal-overlay")?.classList.remove("is-open"); }
 
-/* --- MEMBERS --- THIS IS THE MAIN FIX FOR YOU */
+/* --- MEMBERS --- */
 function renderMembers(filter=""){
   const tbody=document.querySelector("#members-table tbody"); if(!tbody) return;
   const q=filter.toLowerCase();
@@ -143,7 +142,7 @@ function initModals(){
   document.querySelectorAll("[data-close]").forEach(btn=>btn.addEventListener("click",()=>document.getElementById(btn.dataset.close).classList.remove("is-open")));
   document.querySelectorAll(".modal-overlay").forEach(ov=>ov.addEventListener("click",(e)=>{ if(e.target===ov) ov.classList.remove("is-open"); }));
   document.getElementById("add-book-btn")?.addEventListener("click",openBookModal);
-  document.getElementById("add-member-btn")?.addEventListener("click",openMemberModal); // FIXED
+  document.getElementById("add-member-btn")?.addEventListener("click",openMemberModal);
 
   document.getElementById("book-form")?.addEventListener("submit",async(e)=>{
     e.preventDefault();
