@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LibraryHub — Library Management System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ============ NOTIFICATION TOAST ============ -->
+<div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+<!-- ============ LOGIN PAGE ============ -->
+<div id="login-page" class="auth-screen">
+  <div class="auth-panel">
+    <div class="auth-panel__mark">
+      <i class="fa-solid fa-book-open-reader"></i>
+      <span>LibraryHub</span>
+    </div>
+    <div class="auth-panel__body">
+      <h1>Every book finds its reader here.</h1>
+      <p>The record system behind the reading room — tracking every title, every loan, every return, since the first card catalog.</p>
+      <ul class="auth-panel__stats">
+        <li><strong id="stat-books-preview">12,480</strong><span>Titles catalogued</span></li>
+        <li><strong id="stat-members-preview">3,214</strong><span>Registered members</span></li>
+        <li><strong>99.2%</strong><span>Return rate</span></li>
+      </ul>
+    </div>
+    <div class="auth-panel__quote">
+      <p>"A library is not a luxury but one of the necessities of life."</p>
+      <span>Abhay_Chauhan</span>
+    </div>
+  </div>
+
+  <div class="auth-forms">
+    <!-- LOGIN FORM -->
+    <div class="auth-card" id="login-form-wrap">
+      <div class="auth-card__head">
+        <h2>Welcome back</h2>
+        <p>Sign in to manage the circulation desk.</p>
+      </div>
+
+      <form id="login-form" novalidate>
+        <div class="field">
+          <label for="login-email">Username or email</label>
+          <div class="field__control">
+            <i class="fa-regular fa-user"></i>
+            <input type="text" id="login-email" name="email" placeholder="e.g. r.patel or you@college.edu" autocomplete="username">
+          </div>
+          <span class="field__error" id="login-email-error"></span>
+        </div>
+
+        <div class="field">
+          <label for="login-password">Password</label>
+          <div class="field__control">
+            <i class="fa-solid fa-lock"></i>
+            <input type="password" id="login-password" name="password" placeholder="Enter your password" autocomplete="current-password">
+            <button type="button" class="field__toggle" id="toggle-password" aria-label="Show password">
+              <i class="fa-regular fa-eye"></i>
+            </button>
+          </div>
+          <span class="field__error" id="login-password-error"></span>
+        </div>
+
+        <div class="field field--row">
+          <label class="checkbox">
+            <input type="checkbox" id="remember-me">
+            <span class="checkbox__box"></span>
+            Remember me
+          </label>
+          <a href="#" class="link-muted" id="forgot-password-link">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="btn btn--primary btn--block btn--lg" id="login-submit">
+          <span>Sign in</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+
+        <p class="auth-hint"><i class="fa-solid fa-circle-info"></i> Demo access — enter any email &amp; a password of 6+ characters.</p>
+      </form>
+
+      <p class="auth-switch">New to LibraryHub? <a href="#" id="show-register">Create an account</a></p>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div class="auth-card auth-card--hidden" id="register-form-wrap">
+      <div class="auth-card__head">
+        <h2>Create your account</h2>
+        <p>Get a librarian account for the circulation desk.</p>
+      </div>
+
+      <form id="register-form" novalidate>
+        <div class="field">
+          <label for="reg-name">Full name</label>
+          <div class="field__control">
+            <i class="fa-regular fa-id-badge"></i>
+            <input type="text" id="reg-name" placeholder="Your full name">
+          </div>
+          <span class="field__error" id="reg-name-error"></span>
+        </div>
+
+        <div class="field">
+          <label for="reg-email">Email address</label>
+          <div class="field__control">
+            <i class="fa-regular fa-envelope"></i>
+            <input type="email" id="reg-email" placeholder="you@college.edu">
+          </div>
+          <span class="field__error" id="reg-email-error"></span>
+        </div>
+
+        <div class="field">
+          <label for="reg-password">Password</label>
+          <div class="field__control">
+            <i class="fa-solid fa-lock"></i>
+            <input type="password" id="reg-password" placeholder="At least 6 characters">
+            <button type="button" class="field__toggle" id="toggle-reg-password" aria-label="Show password">
+              <i class="fa-regular fa-eye"></i>
+            </button>
+          </div>
+          <span class="field__error" id="reg-password-error"></span>
+        </div>
+
+        <button type="submit" class="btn btn--primary btn--block btn--lg">
+          <span>Create account</span>
+          <i class="fa-solid fa-user-plus"></i>
+        </button>
+      </form>
+
+      <p class="auth-switch">Already registered? <a href="#" id="show-login">Sign in instead</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ DASHBOARD APP ============ -->
+<div id="app" class="app app--hidden">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__brand">
+      <i class="fa-solid fa-book-open-reader"></i>
+      <span>LibraryHub</span>
+    </div>
+
+    <nav class="sidebar__nav">
+      <button class="nav-item is-active" data-section="dashboard">
+        <i class="fa-solid fa-table-columns"></i><span>Dashboard</span>
+      </button>
+      <button class="nav-item" data-section="books">
+        <i class="fa-solid fa-book"></i><span>Books</span>
+      </button>
+      <button class="nav-item" data-section="members">
+        <i class="fa-solid fa-users"></i><span>Members</span>
+      </button>
+      <button class="nav-item" data-section="issue-return">
+        <i class="fa-solid fa-right-left"></i><span>Issue / Return</span>
+      </button>
+      <button class="nav-item" data-section="transactions">
+        <i class="fa-solid fa-receipt"></i><span>Transactions</span>
+      </button>
+      <button class="nav-item" data-section="search">
+        <i class="fa-solid fa-magnifying-glass"></i><span>Search</span>
+      </button>
+      <button class="nav-item" data-section="reports">
+        <i class="fa-solid fa-chart-simple"></i><span>Reports</span>
+      </button>
+      <button class="nav-item" data-section="settings">
+        <i class="fa-solid fa-gear"></i><span>Settings</span>
+      </button>
+    </nav>
+
+    <div class="sidebar__footer">
+      <button class="nav-item nav-item--logout" id="logout-btn">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i><span>Logout</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <header class="topbar">
+      <button class="topbar__burger" id="burger-btn" aria-label="Toggle menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <h1 class="topbar__title" id="section-title">Dashboard</h1>
+      <div class="topbar__right">
+        <div class="topbar__user">
+          <div class="avatar" id="user-avatar">L</div>
+          <div class="topbar__user-info">
+            <strong id="user-name">Librarian</strong>
+            <span>Circulation Desk</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- ===== DASHBOARD SECTION ===== -->
+      <section class="section is-active" id="section-dashboard">
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-card__icon stat-card__icon--navy"><i class="fa-solid fa-books"></i></div>
+            <div class="stat-card__body">
+              <span class="stat-card__label">Total Books</span>
+              <strong class="stat-card__value" id="stat-total-books">0</strong>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__icon stat-card__icon--green"><i class="fa-solid fa-circle-check"></i></div>
+            <div class="stat-card__body">
+              <span class="stat-card__label">Available Books</span>
+              <strong class="stat-card__value" id="stat-available-books">0</strong>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__icon stat-card__icon--gold"><i class="fa-solid fa-book-bookmark"></i></div>
+            <div class="stat-card__body">
+              <span class="stat-card__label">Issued Books</span>
+              <strong class="stat-card__value" id="stat-issued-books">0</strong>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__icon stat-card__icon--brick"><i class="fa-solid fa-user-group"></i></div>
+            <div class="stat-card__body">
+              <span class="stat-card__label">Total Members</span>
+              <strong class="stat-card__value" id="stat-total-members">0</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-grid">
+          <div class="panel panel--wide">
+            <div class="panel__head">
+              <h2>Recent transactions</h2>
+              <button class="btn btn--ghost btn--sm" data-goto="transactions">View all</button>
+            </div>
+            <div class="table-wrap">
+              <table class="table" id="dashboard-transactions-table">
+                <thead>
+                  <tr><th>Book</th><th>Member</th><th>Type</th><th>Date</th><th>Status</th></tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel__head">
+              <h2>Quick book search</h2>
+            </div>
+            <div class="quick-search">
+              <div class="field__control">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="dashboard-quick-search" placeholder="Search by title, author or ISBN...">
+              </div>
+              <div id="dashboard-quick-results" class="quick-results"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== BOOKS SECTION ===== -->
+      <section class="section" id="section-books">
+        <div class="section-toolbar">
+          <div class="field__control field__control--search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="books-filter" placeholder="Filter books by title, author, genre or ISBN...">
+          </div>
+          <button class="btn btn--primary" id="add-book-btn">
+            <i class="fa-solid fa-plus"></i><span>Add Book</span>
+          </button>
+        </div>
+
+        <div class="panel">
+          <div class="table-wrap">
+            <table class="table" id="books-table">
+              <thead>
+                <tr><th>Title</th><th>Author</th><th>Genre</th><th>ISBN</th><th>Copies</th><th>Available</th><th>Status</th><th></th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <p class="empty-state" id="books-empty" style="display:none;">No books match your filter. Try a different search.</p>
+        </div>
+      </section>
+
+      <!-- ===== MEMBERS SECTION ===== -->
+      <section class="section" id="section-members">
+        <div class="section-toolbar">
+          <div class="field__control field__control--search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="members-filter" placeholder="Filter members by name, ID or email...">
+          </div>
+          <button class="btn btn--primary" id="add-member-btn">
+            <i class="fa-solid fa-user-plus"></i><span>Add Member</span>
+          </button>
+        </div>
+
+        <div class="panel">
+          <div class="table-wrap">
+            <table class="table" id="members-table">
+              <thead>
+                <tr><th>Member ID</th><th>Name</th><th>Email</th><th>Joined</th><th>Books Issued</th><th></th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <p class="empty-state" id="members-empty" style="display:none;">No members match your filter.</p>
+        </div>
+      </section>
+
+      <!-- ===== ISSUE / RETURN SECTION ===== -->
+      <section class="section" id="section-issue-return">
+        <div class="panel-grid">
+          <div class="panel">
+            <div class="panel__head"><h2><i class="fa-solid fa-arrow-up-from-bracket"></i> Issue a book</h2></div>
+            <form id="issue-form" class="stack-form">
+              <div class="field">
+                <label for="issue-book-select">Select book</label>
+                <select id="issue-book-select" required></select>
+              </div>
+              <div class="field">
+                <label for="issue-member-select">Select member</label>
+                <select id="issue-member-select" required></select>
+              </div>
+              <div class="field">
+                <label for="issue-due-date">Due date</label>
+                <input type="date" id="issue-due-date" required>
+              </div>
+              <button type="submit" class="btn btn--primary btn--block">
+                <i class="fa-solid fa-check"></i><span>Issue Book</span>
+              </button>
+            </form>
+          </div>
+
+          <div class="panel">
+            <div class="panel__head"><h2><i class="fa-solid fa-arrow-down-to-bracket"></i> Return a book</h2></div>
+            <form id="return-form" class="stack-form">
+              <div class="field">
+                <label for="return-select">Select active loan</label>
+                <select id="return-select" required></select>
+              </div>
+              <div id="return-preview" class="return-preview"></div>
+              <button type="submit" class="btn btn--secondary btn--block">
+                <i class="fa-solid fa-rotate-left"></i><span>Return Book</span>
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel__head"><h2>Currently issued</h2></div>
+          <div class="table-wrap">
+            <table class="table" id="active-loans-table">
+              <thead><tr><th>Book</th><th>Member</th><th>Issued</th><th>Due</th><th>Status</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <p class="empty-state" id="loans-empty" style="display:none;">No books are currently issued.</p>
+        </div>
+      </section>
+
+      <!-- ===== TRANSACTIONS SECTION ===== -->
+      <section class="section" id="section-transactions">
+        <div class="section-toolbar">
+          <div class="field__control field__control--search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="transactions-filter" placeholder="Filter transactions by book or member...">
+          </div>
+          <select id="transactions-type-filter" class="select-inline">
+            <option value="all">All types</option>
+            <option value="issue">Issued</option>
+            <option value="return">Returned</option>
+          </select>
+        </div>
+        <div class="panel">
+          <div class="table-wrap">
+            <table class="table" id="transactions-table">
+              <thead><tr><th>Book</th><th>Member</th><th>Type</th><th>Date</th><th>Status</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <p class="empty-state" id="transactions-empty" style="display:none;">No transactions recorded yet.</p>
+        </div>
+      </section>
+
+      <!-- ===== SEARCH SECTION ===== -->
+      <section class="section" id="section-search">
+        <div class="panel">
+          <div class="panel__head"><h2>Search the catalog</h2></div>
+          <div class="field__control field__control--search field__control--big">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="global-search-input" placeholder="Search by title, author, genre or ISBN...">
+          </div>
+          <div class="book-grid" id="search-results-grid"></div>
+          <p class="empty-state" id="search-empty" style="display:none;">Start typing to search the catalog.</p>
+        </div>
+      </section>
+
+      <!-- ===== REPORTS SECTION ===== -->
+      <section class="section" id="section-reports">
+        <div class="panel-grid">
+          <div class="panel">
+            <div class="panel__head"><h2>Books by genre</h2></div>
+            <div id="report-genre" class="bar-report"></div>
+          </div>
+          <div class="panel">
+            <div class="panel__head"><h2>Circulation summary</h2></div>
+            <ul class="report-list" id="report-summary"></ul>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel__head"><h2>Most issued books</h2></div>
+          <div class="table-wrap">
+            <table class="table" id="report-top-books">
+              <thead><tr><th>Title</th><th>Author</th><th>Times Issued</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== SETTINGS SECTION ===== -->
+      <section class="section" id="section-settings">
+        <div class="panel panel--narrow">
+          <div class="panel__head"><h2>Account settings</h2></div>
+          <form id="settings-form" class="stack-form">
+            <div class="field">
+              <label for="settings-name">Display name</label>
+              <input type="text" id="settings-name">
+            </div>
+            <div class="field">
+              <label for="settings-email">Email</label>
+              <input type="email" id="settings-email">
+            </div>
+            <div class="field">
+              <label for="settings-theme">Theme</label>
+              <select id="settings-theme">
+                <option value="light">Light (default)</option>
+                <option value="compact">Compact tables</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn--primary">
+              <i class="fa-solid fa-floppy-disk"></i><span>Save changes</span>
+            </button>
+          </form>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<!-- ============ MODAL: ADD / EDIT BOOK ============ -->
+<div class="modal-overlay" id="book-modal-overlay">
+  <div class="modal">
+    <div class="modal__head">
+      <h3 id="book-modal-title">Add a new book</h3>
+      <button class="modal__close" data-close="book-modal-overlay"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <form id="book-form" class="stack-form">
+      <input type="hidden" id="book-id">
+      <div class="field">
+        <label for="book-title">Title</label>
+        <input type="text" id="book-title" required>
+      </div>
+      <div class="field">
+        <label for="book-author">Author</label>
+        <input type="text" id="book-author" required>
+      </div>
+      <div class="field field--split">
+        <div>
+          <label for="book-genre">Genre</label>
+          <input type="text" id="book-genre" required>
+        </div>
+        <div>
+          <label for="book-isbn">ISBN</label>
+          <input type="text" id="book-isbn" required>
+        </div>
+      </div>
+      <div class="field">
+        <label for="book-copies">Total copies</label>
+        <input type="number" id="book-copies" min="1" value="1" required>
+      </div>
+      <div class="modal__actions">
+        <button type="button" class="btn btn--ghost" data-close="book-modal-overlay">Cancel</button>
+        <button type="submit" class="btn btn--primary" id="book-form-submit">Save Book</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ============ MODAL: ADD MEMBER ============ -->
+<div class="modal-overlay" id="member-modal-overlay">
+  <div class="modal">
+    <div class="modal__head">
+      <h3 id="member-modal-title">Add a new member</h3>
+      <button class="modal__close" data-close="member-modal-overlay"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <form id="member-form" class="stack-form">
+      <input type="hidden" id="member-id">
+      <div class="field">
+        <label for="member-name">Full name</label>
+        <input type="text" id="member-name" required>
+      </div>
+      <div class="field">
+        <label for="member-email">Email</label>
+        <input type="email" id="member-email" required>
+      </div>
+      <div class="modal__actions">
+        <button type="button" class="btn btn--ghost" data-close="member-modal-overlay">Cancel</button>
+        <button type="submit" class="btn btn--primary" id="member-form-submit">Add Member</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ============ MODAL: CONFIRM DELETE ============ -->
+<div class="modal-overlay" id="confirm-modal-overlay">
+  <div class="modal modal--small">
+    <div class="modal__head">
+      <h3>Are you sure?</h3>
+      <button class="modal__close" data-close="confirm-modal-overlay"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <p id="confirm-modal-text" class="modal__text">This action cannot be undone.</p>
+    <div class="modal__actions">
+      <button type="button" class="btn btn--ghost" data-close="confirm-modal-overlay">Cancel</button>
+      <button type="button" class="btn btn--danger" id="confirm-modal-action">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
