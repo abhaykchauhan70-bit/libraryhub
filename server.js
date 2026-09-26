@@ -1,34 +1,35 @@
-require('dotenv').config();
 const express = require('express');
+const dotenv = require('dotenv');
 const cors = require('cors');
 const path = require('path');
-const connectDB = require('./db');
-const authRoutes = require('./authRoutes');
-const bookRoutes = require('./bookRoutes');
+const connectDB = require('./db.js');
+
+dotenv.config();
 
 const app = express();
 
-// ===== Middleware =====
-app.use(cors({ origin: "*" }));
-app.use(express.json());
-
-// ===== Connect to MongoDB =====
+// Database connect
 connectDB();
 
-// ===== API Routes - Ye sabse pehle hona chahiye =====
-app.use("/api/auth", authRoutes);
-app.use("/api/books", bookRoutes);
+// Middlewares
+app.use(cors());
+app.use(express.json());
 
-// ===== Health check - API ke liye =====
+// ===== API Routes =====
+app.use('/api/auth', require('./authRoutes.js'));
+app.use('/api/books', require('./bookRoutes.js'));
+
+// Test route - ye Render pe check karne ke liye
 app.get("/api", (req, res) => {
-  res.json({ message: "LibraryHub API is running ✅" });
+  res.json({ message: "LibraryHub API is running 🟢" });
 });
 
-// ===== Frontend serve =====
-app.use(express.static(__dirname));
+// ===== Frontend Serve - FIXED CODE =====
+app.use(express.static(path.join(__dirname)));
 
+// Ye sabse important fix hai - "" ki jagah "*" lagaya hai
 app.get("*", (req, res) => {
-  // Agar request /api se start hoti hai toh HTML mat bhejo, JSON error bhejo
+  // Agar API ka route galat hai to HTML mat bhejo, 404 bhejo
   if (req.originalUrl.startsWith('/api')) {
     return res.status(404).json({ message: `API route ${req.originalUrl} not found` });
   }
