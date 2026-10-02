@@ -4,6 +4,9 @@ A simple Library Management System where you can add names and store data in Mon
 
 📍 Haridwar, Uttarakhand | MERN Stack Project
 
+### 🌐 Live Website
+**[https://libraryhub-js6u.onrender.com](https://libraryhub-js6u.onrender.com)**
+
 ### ✨ Features
 - Add Name / Book Entry
 - View all entries from database
@@ -14,6 +17,7 @@ A simple Library Management System where you can add names and store data in Mon
 - Frontend: React.js, HTML, CSS
 - Backend: Node.js, Express.js
 - Database: MongoDB Atlas
+- Live: Render
 
 ### 👨‍💻 Author
 Abhay Chauhan
